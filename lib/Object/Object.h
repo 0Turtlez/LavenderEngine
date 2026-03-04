@@ -29,11 +29,11 @@ struct Transform {
 };
 
 // Rotation Value
-// x = theta in degrees
+// z = theta in degrees
 struct Rotation {
-    float x = 0;
+    float z = 0;
 
-    Rotation(float _x = 0) : x(_x) {}
+    Rotation(float _x = 0) : z(_x) {}
 };
 
 // 2D scaling values
@@ -52,7 +52,8 @@ public:
     float borderThickness;
 
     // Position Data
-    Transform transform;
+    Transform worldPosition;
+    Transform position;
     Scale scale;
     Rotation rotation;
 
@@ -62,6 +63,7 @@ public:
         Color _color = Color(),
         bool _isFilled = false,
         float _borderThickness = 0.0f,
+
         Transform _transform = Transform(),
         Scale _scale = Scale(),
         Rotation _rotation = Rotation()

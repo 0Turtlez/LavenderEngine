@@ -16,7 +16,7 @@ Object::Object(
     color(_color),
     isFilled(_isFilled),
     borderThickness(_borderThickness),
-    transform(_transform),
+    position(_transform),
     scale(_scale),
     rotation(_rotation) {
 

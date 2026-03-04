@@ -16,69 +16,93 @@
 
 // in main, the goal is to be the trafic conductor that manages the order of execution
 #define GL_SILENCE_DEPRECATION
-#include <GLUT/glut.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "lib/Object/Object.h"
 #include "lib/Scene/Scene.h"
 #include "lib/Renderer/Renderer.h"
+#include <iostream>
 
 
-#pragma region Object-Init
 // Global Scene declare
 Scene scene;
-#pragma endregion Object-Init
 
-
-// Updates screen 60 fps
-void timer(int value) {
-
-    // Calls update code every 60fps
-    scene.update();
-
-    // Triggers redraw
-    glutPostRedisplay();
-    // Waits 16ms per update
-    glutTimerFunc(16, timer, value);
-}
-
-void display() {
-    Renderer::drawScene(scene);
-}
 // Scales canvas to viewport to prevent shearing
-void reshape(int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+}
 
-    // Set aspect of window based on width and height
-    float aspect = (float)width / (float)height;
-    if (aspect >= 1.0f) {
-        gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
-    } else {
-        gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
+void processInput(GLFWwindow *window) {
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        std::cout << "W" << std::endl;
     }
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
 }
 
 int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitWindowSize(1024, 768);
-    glutCreateWindow("Davis");
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize!" << std::endl;
+        return -1;
+    }
+    // Sets GLFW version (CORE PROFILE 3.3)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
-    // Set background to dark gray
-    glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+    GLFWwindow* window = glfwCreateWindow(960, 540, "Lavender", nullptr, nullptr);
+    if (!window) {
+        std::cerr << "Failed to create GLFW window!" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
 
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+    // Initial scene function call
     scene.start();
 
-    // Assign display func
-    glutDisplayFunc(display);
-    // Assign window reshape func
-    glutReshapeFunc(reshape);
-    // Assign timer and start it
-    glutTimerFunc(0, timer, 0);
+    // Time
+    double pastTime = glfwGetTime();
+    const double targetFrameRate = 60.0;
+    const double timePerFrame = 1 / targetFrameRate;
 
-    // Start app
-    glutMainLoop();
+    // Display Loop
+    while (!glfwWindowShouldClose(window)) {
+        double currentTime = glfwGetTime();
+        double deltaTime = currentTime - pastTime;
+
+        processInput(window);
+
+        if (deltaTime >= timePerFrame) {
+            // Update scene by delta time to target fps
+            scene.update(deltaTime);
+
+            // Render
+            // Set background to dark gray
+            glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            Renderer::drawScene(scene);
+
+            // Swap buffers and poll
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            pastTime = currentTime;
+        }
+
+        glfwPollEvents();
+    }
+    Renderer::shutdownRenderer();
+    // Close Window
+    glfwTerminate();
     return 0;
 }

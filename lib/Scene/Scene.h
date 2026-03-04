@@ -10,8 +10,8 @@
 class Scene {
 public:
     void start();           // Ran at start of program
-    void update();          // Ran every frame
-    void animateShapes();   // Experimental logic
+    void update(float deltaTime);          // Ran every frame
+    void animateShapes(float deltaTime);   // Experimental logic
 
     std::vector<Object*> objects;
 
@@ -20,10 +20,11 @@ private:
     *hex, *hex2, *hep, *hep2, *oct, *oct2, *circle, *circle2;
 
     // private state variables
-    float moveSpeed = 0.5f;
+    float moveSpeed = 0.0f;
     float rotateSpeed = 1.0f;
     float scaleSpeed = 0.1f;
-    int frameCounter = 0;
+    float vertexTimer = 0.0f;
+    float vertexUpdateInterval = 1.0f; // every 1 second
 
     // Eventually add an overload that will create the object for each case of inputs
     Object* createAndAdd(int vertices, Color color, bool isFilled, float thickness, Transform trans, Scale scale, Rotation rotation);

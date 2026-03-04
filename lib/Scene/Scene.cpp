@@ -32,28 +32,30 @@ void Scene::updateVertexCount(Object* obj, int vertex) {
 }
 
 // Experimental: animation code that rotates, translates and scales polygons also updates vertex count
-void Scene::animateShapes() {
+void Scene::animateShapes(float deltaTime) {
     for (Object* object : objects) {
-        object->rotation.x -= rotateSpeed;
+        object->rotation.z -= rotateSpeed;
 
-        object->transform.x += moveSpeed;
-        object->transform.y += moveSpeed;
+        object->position.x += moveSpeed * deltaTime;
+        object->position.y += moveSpeed * deltaTime;
 
-        if (object->transform.x > 150.0f) {
-            object->transform.x = -150.0f;
+        if (object->position.x > 150.0f) {
+            object->position.x = -150.0f;
         }
 
-        if (object->transform.y > 120.0f) {
-            object->transform.y = -120.0f;
+        if (object->position.y > 120.0f) {
+            object->position.y = -120.0f;
         }
 
         object->scale = Scale(object->scale.x - scaleSpeed, object->scale.y - scaleSpeed);
 
-        if (object->scale.x < -10) {
-            object->scale= Scale(10.0f, 10.0f);
+        if (object->scale.x < -20) {
+            object->scale= Scale(20.0f, 20.0f);
         }
 
-        if (frameCounter % 15 == 0) {
+        vertexTimer += deltaTime;
+
+        if (vertexTimer >= vertexUpdateInterval) {
             int currentVertices = object->points.size();
             int nextVertices = currentVertices + 1;
 
@@ -64,6 +66,7 @@ void Scene::animateShapes() {
 
             updateVertexCount(object, nextVertices);
 
+            vertexTimer = 0.0f;
         }
     }
 }
@@ -75,16 +78,15 @@ Object* Scene::createAndAdd(int vertices, Color color, bool isFilled, float thic
     return newObj;
 }
 
-void Scene::update() {
+void Scene::update(float deltaTime) {
     // Experimental Object manipulation
-    animateShapes();
-    frameCounter++;
+    animateShapes(deltaTime);
 }
 
 // Runs at start of program
 void Scene::start() {
     float borderThickness = 0.0f;
-    const float shapeScale = 1.0f;
+    const float shapeScale = 11.0f;
 
     // Triangle
     tri = createAndAdd(3, Color{0.0f, 0.0f, 0.5f}, false, borderThickness, Transform(10, 0), Scale(shapeScale, shapeScale), Rotation{210.0f});
@@ -114,31 +116,31 @@ void Scene::start() {
     circle = createAndAdd(360, Color{1.0f, 0.5f, 0.5f}, false, borderThickness, Transform(10, 0), Scale(shapeScale, shapeScale), Rotation{0.0f});
     circle2 = createAndAdd(360, Color{1.0f, 1.0f, 0.5f}, true, borderThickness, Transform(10, 0), Scale(shapeScale, shapeScale), Rotation{0.0f});
     // Triangle
-    tri->transform = Transform{-85, 75};
-    tri2->transform = Transform{-55, 75};
+    tri->position = Transform{-85, 75};
+    tri2->position = Transform{-55, 75};
 
     // Square
-    square->transform = Transform{-15, 75};
-    square2->transform = Transform{15, 75};
+    square->position = Transform{-15, 75};
+    square2->position = Transform{15, 75};
 
     // Pentagon
-    pen->transform = Transform{55, 75};
-    pen2->transform = Transform{85, 75};
+    pen->position = Transform{55, 75};
+    pen2->position = Transform{85, 75};
 
     // Hex
-    hex->transform = Transform{-85, 0};
-    hex2->transform = Transform{-55, 0};
+    hex->position = Transform{-85, 0};
+    hex2->position = Transform{-55, 0};
 
     // Hep
-    hep->transform = Transform{-15, 0};
-    hep2->transform = Transform{15, 0};
+    hep->position = Transform{-15, 0};
+    hep2->position = Transform{15, 0};
 
     // Oct
-    oct->transform = Transform{55, 0};
-    oct2->transform = Transform{85, 0};
+    oct->position = Transform{55, 0};
+    oct2->position = Transform{85, 0};
 
     // Circle
-    circle->transform = Transform{-15,  -75};
-    circle2->transform = Transform{15, -75};
+    circle->position = Transform{-15,  -75};
+    circle2->position = Transform{15, -75};
 
 }

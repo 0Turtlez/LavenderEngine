@@ -3,65 +3,166 @@
 //
 #define GL_SILENCE_DEPRECATION
 #include "Renderer.h"
-#include <GLUT/glut.h>
+
+#include "glad/glad.h"
+#include <iostream>
+#include <ostream>
+#include <GLFW/glfw3.h>
+
 #ifndef PI
     #define PI 3.14159265358979323846
 #endif
-
+unsigned int Renderer::vertexShader = 0;
+unsigned int Renderer::fragmentShader = 0;
+unsigned int Renderer::shaderProgram = 0;
+unsigned int Renderer::VAO = 0;
+unsigned int Renderer::VBO = 0;
+unsigned int Renderer::EBO = 0;
 
 void Renderer::drawScene(Scene &scene) {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // For each Object in Scene draw Object
-    for (Object* object : scene.objects) {
-        if (object == nullptr) {
-            continue;
-        }
 
-        drawObject(*object);
+    float vertices[] = {
+        0.5f,  0.5f, 0.0f,  // top right
+        0.5f, -0.5f, 0.0f,  // bottom right
+       -0.5f, -0.5f, 0.0f,  // bottom left
+       -0.5f,  0.5f, 0.0f   // top left
+   };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,  // first Triangle
+        1, 2, 3   // second Triangle
+    };
+
+    setUpShaders();
+    setUpVertexObjects(vertices, sizeof(vertices), indices, sizeof(indices));
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    // glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // Uncomment after implement of triangle
+    // // For each Object in Scene draw Object
+    // for (Object* object : scene.objects) {
+    //     if (object == nullptr) {
+    //         continue;
+    //     }
+    //
+    //     drawObject(*object);
+    // }
+}
+
+void Renderer::shutdownRenderer() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glDeleteProgram(shaderProgram);
+}
+
+void Renderer::setUpShaders() {
+    // Vertex
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    glCompileShader(vertexShader);
+    // Compile check
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
+        std::cout << infoLog << std::endl;
     }
 
+    // Fragment
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    glCompileShader(fragmentShader);
 
-    glutSwapBuffers();
+    // Compile Check
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
+        std::cout << infoLog << std::endl;
+    }
+
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
+        std::cout << infoLog << std::endl;
+    }
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+}
+
+
+void Renderer::setUpVertexObjects(float vertices[], size_t sizeVertices, unsigned int indices[], size_t sizeIndices) {
+    // Generate VAO VBO and EBO
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    // Bind VAO
+    glBindVertexArray(VAO);
+
+    // Bind and set VBOs
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeVertices, vertices, GL_DYNAMIC_DRAW);
+
+    // Bind and set EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeIndices, indices, GL_STATIC_DRAW);
+
+    // Config vertex attributes
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // You can unbind the VAO afterward so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0);
+
+
+    // uncomment this call to draw in wireframe polygons.
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 // Draws objects polygon
 // later refactor to need just the polygon data, saves memory and speeds up draw
 void Renderer::drawObject(const Object &obj) {
-    glLineWidth(obj.borderThickness);
-    glColor3f(obj.color.r, obj.color.g, obj.color.b);
-
-    if (obj.isFilled) {
-        glBegin(GL_POLYGON);
-    } else {
-        glBegin(GL_LINE_LOOP);
-    }
-    // Scale Rotate Transform each point and add to the polygon
-    // Refactor to use built-in functions for SRT
-    // glTranslatef
-    // glRotatef
-    // glScalef
-    for (const auto& p : obj.points) {
-        float point_x = p.x;
-        float point_y = p.y;
-
-        // Scale
-        point_x *= obj.scale.x * 0.01;
-        point_y *= obj.scale.y * 0.01;
-
-        // Rotate
-        float angle = obj.rotation.x * (PI / 180.0f);
-        float rotated_x = (point_x * cos(angle)) - (point_y * sin(angle));
-        float rotated_y = (point_x * sin(angle)) + (point_y * cos(angle));
-
-        point_x = rotated_x;
-        point_y = rotated_y;
-
-        // Transform
-        point_x += obj.transform.x * 0.01;
-        point_y += obj.transform.y * 0.01;
-
-        glVertex2f(point_x, point_y);
-    }
-    glEnd();
+    // // Save current coordinate system state
+    // glPushMatrix();
+    //
+    // // Apply Scale Rotate Transform each point and add to the polygon
+    // // Reverse order
+    // glTranslatef(obj.position.x, obj.position.y, 0.0f);
+    // glRotatef(obj.rotation.z, 0.0f, 0.0f, 1.0f);
+    // glScalef(obj.scale.x, obj.scale.y, 1.0f);
+    //
+    // // Set Style
+    // glLineWidth(obj.borderThickness);
+    // glColor3f(obj.color.r, obj.color.g, obj.color.b);
+    //
+    // // Set fill mode
+    // if (obj.isFilled) {
+    //     glBegin(GL_POLYGON);
+    // } else {
+    //     glBegin(GL_LINE_LOOP);
+    // }
+    //
+    // // Apply style for each point on the vertex
+    // for (const auto& p : obj.points) {
+    //     glVertex2f(p.x, p.y);
+    // }
+    //
+    // glEnd();
+    //
+    // glPopMatrix();
 }

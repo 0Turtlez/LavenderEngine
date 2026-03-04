@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 4.1)
-project(asm1)
+cmake_minimum_required(VERSION 3.10)
+project(LavenderEngine)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -7,21 +7,31 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(/opt/homebrew/include)
 link_directories(/opt/homebrew/lib)
 
-# Include Glad headers
-include_directories(glad/include)
+# Include personal libaray
 include_directories(lib)
+include_directories(include/glad/include)
 
-# Define the executable with BOTH main.cpp and glad.c
-add_executable(asm1 main.cpp glad/src/glad.c
-        lib/scene/scene.cpp
-        lib/scene/scene.h
+# Find GLFW and OpenGL
+find_package(glfw3 REQUIRED)
+find_package(OpenGL REQUIRED)
+
+# Define Executable
+add_executable(lavender main.cpp
+        include/glad/src/glad.c
+        lib/Scene/scene.cpp
+        lib/Scene/scene.h
         lib/Object/object.cpp
         lib/Object/object.h
         lib/Renderer/Renderer.cpp
         lib/Renderer/Renderer.h
+        lib/Camera/Camera.cpp
+        lib/Camera/Camera.h
 )
 
-# Link Frameworks and Libraries to the 'asm1' target
+# Link Frameworks and Libraries to the 'lavender' target
 find_library(OPENGL_LIB OpenGL REQUIRED)
 find_library(GLUT_LIB GLUT REQUIRED)
-target_link_libraries(asm1 glfw "${OPENGL_LIB}" "${GLUT_LIB}")
+target_link_libraries(lavender
+        glfw
+        "${OPENGL_LIB}"
+)
