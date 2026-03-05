@@ -9,6 +9,8 @@
 
 class Renderer {
 public:
+    static void setupRenderer();
+
     static void drawScene(Scene &scene);
     static void shutdownRenderer();
 private:
@@ -23,9 +25,13 @@ private:
 
     static inline const char *vertexShaderSource = R"glsl(
         #version 330 core
-        layout (location = 0) in vec3 aPos;
+        layout (location = 0) in vec2 aPos; // Change to vec2
+        uniform vec2 offset;
+        uniform float scale;
+
         void main() {
-            gl_Position = vec4(aPos, 1.0);
+            // Apply scale and offset manually for now
+            gl_Position = vec4(aPos * scale + offset, 0.0, 1.0);
         }
     )glsl";
 

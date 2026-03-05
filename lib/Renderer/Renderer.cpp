@@ -3,6 +3,7 @@
 //
 #define GL_SILENCE_DEPRECATION
 #include "Renderer.h"
+#include "../Object/Object.h"
 
 #include "glad/glad.h"
 #include <iostream>
@@ -19,37 +20,32 @@ unsigned int Renderer::VAO = 0;
 unsigned int Renderer::VBO = 0;
 unsigned int Renderer::EBO = 0;
 
-void Renderer::drawScene(Scene &scene) {
-    glClear(GL_COLOR_BUFFER_BIT);
+float vertices[] = {
+    0.5f,  0.5f, 0.0f,  // top right
+    0.5f, -0.5f, 0.0f,  // bottom right
+   -0.5f, -0.5f, 0.0f,  // bottom left
+   -0.5f,  0.5f, 0.0f   // top left
+};
+unsigned int indices[] = {  // note that we start from 0!
+    0, 1, 2,  // first Triangle
+    1, 2, 3   // second Triangle
+};
 
-
-    float vertices[] = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-       -0.5f, -0.5f, 0.0f,  // bottom left
-       -0.5f,  0.5f, 0.0f   // top left
-   };
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,  // first Triangle
-        1, 2, 3   // second Triangle
-    };
-
+void Renderer::setupRenderer() {
     setUpShaders();
     setUpVertexObjects(vertices, sizeof(vertices), indices, sizeof(indices));
 
-    glUseProgram(shaderProgram);
-    glBindVertexArray(VAO);
-    // glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    // Uncomment after implement of triangle
-    // // For each Object in Scene draw Object
-    // for (Object* object : scene.objects) {
-    //     if (object == nullptr) {
-    //         continue;
-    //     }
-    //
-    //     drawObject(*object);
-    // }
+}
+void Renderer::drawScene(Scene &scene) {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // For each Object in Scene draw Object
+    for (Object* object : scene.objects) {
+        if (object == nullptr) {
+            continue;
+        }
+        drawObject(*object);
+    }
 }
 
 void Renderer::shutdownRenderer() {
@@ -119,7 +115,8 @@ void Renderer::setUpVertexObjects(float vertices[], size_t sizeVertices, unsigne
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeIndices, indices, GL_STATIC_DRAW);
 
     // Config vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // Update to 3 when I start doing 3D graphics
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -131,12 +128,32 @@ void Renderer::setUpVertexObjects(float vertices[], size_t sizeVertices, unsigne
 
 
     // uncomment this call to draw in wireframe polygons.
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 // Draws objects polygon
 // later refactor to need just the polygon data, saves memory and speeds up draw
 void Renderer::drawObject(const Object &obj) {
+    glUseProgram(shaderProgram);
+
+    glUniform2f(glGetUniformLocation(shaderProgram, "offset"), obj.position.x / 100.0f, obj.position.y / 100.0f);
+    glUniform1f(glGetUniformLocation(shaderProgram, "scale"), obj.scale.x / 100.0f);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, obj.points.size() * sizeof(Point), obj.points.data(), GL_DYNAMIC_DRAW);
+
+    int vertexColorLocation = glGetUniformLocation(shaderProgram, "objColor");
+    glUniform4f(vertexColorLocation, obj.color.r, obj.color.g, obj.color.b, 1.0f);
+
+    if (obj.isFilled) {
+        glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei)obj.points.size());
+    } else {
+        glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)obj.points.size());
+    }
+
+    glBindVertexArray(0);
     // // Save current coordinate system state
     // glPushMatrix();
     //

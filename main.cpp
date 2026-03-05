@@ -76,6 +76,7 @@ int main(int argc, char** argv) {
     const double targetFrameRate = 60.0;
     const double timePerFrame = 1 / targetFrameRate;
 
+    Renderer::setupRenderer();
     // Display Loop
     while (!glfwWindowShouldClose(window)) {
         double currentTime = glfwGetTime();
