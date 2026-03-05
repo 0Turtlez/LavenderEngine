@@ -27,11 +27,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04fe3e27-6672-4340-811b-80ae8478fb4d" name="Changes" comment="Refactored project to destroy monolith and started VBO EBO VAO rendering">
+    <list default="true" id="04fe3e27-6672-4340-811b-80ae8478fb4d" name="Changes" comment="🟥Fixed Rendering 2D shapes in the 3rd dimension">
+      <change afterPath="$PROJECT_DIR$/engine/structure.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Renderer/Renderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Renderer/Renderer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Renderer/Renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Renderer/Renderer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Scene/Scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Scene/Scene.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Scene/Scene.h" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Scene/Scene.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +147,7 @@
       <workItem from="1772645728303" duration="272000" />
       <workItem from="1772646020878" duration="31000" />
       <workItem from="1772646061263" duration="11438000" />
-      <workItem from="1772658974369" duration="7988000" />
+      <workItem from="1772658974369" duration="15480000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -171,7 +173,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772664621387</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="🟥Fixed Rendering 2D shapes in the 3rd dimension">
+      <option name="closed" value="true" />
+      <created>1772676271862</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772676271862</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,7 +198,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Refactored project to destroy monolith and started VBO EBO VAO rendering" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored project to destroy monolith and started VBO EBO VAO rendering" />
+    <MESSAGE value="Fixed Rendering 2D shapes in the 3rd dimension" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed Rendering 2D shapes in the 3rd dimension" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -39,13 +39,52 @@ void Renderer::setupRenderer() {
 void Renderer::drawScene(Scene &scene) {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // For each Object in Scene draw Object
+    // Gather pooints into master buffer
+    std::vector<Point> masterBuffer;
     for (Object* object : scene.objects) {
         if (object == nullptr) {
             continue;
         }
-        drawObject(*object);
+        masterBuffer.insert(masterBuffer.end(), object->points.begin(), object->points.end());
     }
+
+    // Bind State
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Upload all data to GPU in one call
+    glBufferData(GL_ARRAY_BUFFER, masterBuffer.size() * sizeof(Point), masterBuffer.data(), GL_DYNAMIC_DRAW);
+
+    // Cache shader uniform location
+    int offsetLoc = glGetUniformLocation(shaderProgram, "offset");
+    int scaleLoc = glGetUniformLocation(shaderProgram, "scale");
+    int colorLoc = glGetUniformLocation(shaderProgram, "objColor");
+    int aspectLoc = glGetUniformLocation(shaderProgram, "aspectRatio");
+
+    glUniform1f(aspectLoc, 960.0f / 540.0f);
+
+    // Draw calls into master buffer
+    int currentOffset = 0;
+    for (Object* object : scene.objects) {
+        if (object == nullptr) {
+            continue;
+        }
+        glUniform2f(offsetLoc, object->position.x / 100.0f, object->position.y / 100.0f);
+        glUniform1f(scaleLoc, object->scale.x / 100.0f);
+        glUniform4f(colorLoc, object->color.r, object->color.g, object->color.b, 1.0f);
+
+        if (object->isFilled) {
+            glDrawArrays(GL_TRIANGLE_FAN,  currentOffset, (GLsizei)object->points.size());
+        } else {
+            glDrawArrays(GL_LINE_LOOP, currentOffset, (GLsizei)object->points.size());
+        }
+
+        currentOffset += object->points.size();
+    }
+
+    // Unbind state
+    glBindVertexArray(0);
 }
 
 void Renderer::shutdownRenderer() {

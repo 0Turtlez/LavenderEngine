@@ -33,6 +33,12 @@ void Scene::updateVertexCount(Object* obj, int vertex) {
 
 // Experimental: animation code that rotates, translates and scales polygons also updates vertex count
 void Scene::animateShapes(float deltaTime) {
+    vertexTimer += deltaTime;
+    bool shouldUpdate = false;
+    if (vertexTimer >= vertexUpdateInterval) {
+        shouldUpdate = true;
+        vertexTimer = 0.0f;
+    }
     for (Object* object : objects) {
         object->rotation.z -= rotateSpeed;
 
@@ -47,15 +53,14 @@ void Scene::animateShapes(float deltaTime) {
             object->position.y = -120.0f;
         }
 
-        object->scale = Scale(object->scale.x - scaleSpeed, object->scale.y - scaleSpeed);
+        // object->scale = Scale(object->scale.x - scaleSpeed, object->scale.y - scaleSpeed);
+        //
+        // if (object->scale.x < -20) {
+        //     object->scale= Scale(20.0f, 20.0f);
+        // }
 
-        if (object->scale.x < -20) {
-            object->scale= Scale(20.0f, 20.0f);
-        }
 
-        vertexTimer += deltaTime;
-
-        if (vertexTimer >= vertexUpdateInterval) {
+        if (shouldUpdate) {
             int currentVertices = object->points.size();
             int nextVertices = currentVertices + 1;
 
@@ -66,7 +71,6 @@ void Scene::animateShapes(float deltaTime) {
 
             updateVertexCount(object, nextVertices);
 
-            vertexTimer = 0.0f;
         }
     }
 }

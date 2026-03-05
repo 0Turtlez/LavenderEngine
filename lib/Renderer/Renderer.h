@@ -28,10 +28,13 @@ private:
         layout (location = 0) in vec2 aPos; // Change to vec2
         uniform vec2 offset;
         uniform float scale;
+        uniform float aspectRatio;
 
         void main() {
+            vec2 pos = aPos * scale + offset;
+
             // Apply scale and offset manually for now
-            gl_Position = vec4(aPos * scale + offset, 0.0, 1.0);
+            gl_Position = vec4(pos.x / aspectRatio, pos.y, 0.0, 1.0);
         }
     )glsl";
 
