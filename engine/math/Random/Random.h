@@ -6,6 +6,7 @@
 #define LAVENDERENGINE_RANDOM_H
 
 #include <random>
+#include <algorithm>
 
 #include "math/Color/Color.h"
 #include "math/Vector/Vector.h"
