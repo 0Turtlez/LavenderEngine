@@ -29,12 +29,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04fe3e27-6672-4340-811b-80ae8478fb4d" name="Changes" comment="added Math operators for random, matrixes, vectors, color, and updated src to reflect changes">
-      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="04fe3e27-6672-4340-811b-80ae8478fb4d" name="Changes" comment="Updated Cmake to support windows builds">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/math/Random/Random.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/math/Random/Random.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +160,8 @@
       <workItem from="1772765345408" duration="1670000" />
       <workItem from="1772768772918" duration="321000" />
       <workItem from="1772769110970" duration="1598000" />
-      <workItem from="1772818943016" duration="7000" />
+      <workItem from="1772818943016" duration="987000" />
+      <workItem from="1772819967158" duration="3000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -234,7 +231,8 @@
     <MESSAGE value="Fixed Rendering 2D shapes in the 3rd dimension" />
     <MESSAGE value="added file structure components in prep for refactor" />
     <MESSAGE value="added Math operators for random, matrixes, vectors, color, and updated src to reflect changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="added Math operators for random, matrixes, vectors, color, and updated src to reflect changes" />
+    <MESSAGE value="Updated Cmake to support windows builds" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Cmake to support windows builds" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
