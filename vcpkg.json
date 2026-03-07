@@ -1,0 +1,8 @@
+{
+  "name": "lavender-engine",
+  "version": "0.1.0",
+  "dependencies": [
+    "sol2",
+    "glfw3"
+  ]
+}
