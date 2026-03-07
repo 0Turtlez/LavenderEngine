@@ -6,7 +6,7 @@
 #define ASM1_RENDERER_H
 #include "../engine/scene/Scene/Scene.h"
 
-
+using lavender::core::Object;
 class Renderer {
 public:
     static void setupRenderer();

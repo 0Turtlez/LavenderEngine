@@ -8,7 +8,8 @@
 
 #include "math/Vector/Vector.h"
 
-struct Matrix4 {
+namespace lavender::math {
+    struct Matrix4 {
     float matrix[4][4]{};
 
     Matrix4() {
@@ -117,6 +118,7 @@ struct Matrix4 {
 
 class Matrix {
 };
+}
 
 
 #endif //LAVENDERENGINE_MATRIX_H

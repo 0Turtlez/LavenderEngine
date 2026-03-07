@@ -42,6 +42,8 @@ add_executable(lavender main.cpp
         engine/math/Matrix/Matrix.cpp
         engine/math/Matrix/Matrix.h
         engine/math/MathUtils/MathUtils.h
+        engine/core/Application/Application.cpp
+        engine/core/Application/Application.h
 )
 
 if (WIN32)

@@ -1,0 +1,45 @@
+# --- Build Directories ---
+# Ignore the build folder from your tree
+cmake-build-debug/
+cmake-build-release/
+build/
+bin/
+obj/
+
+# --- CMake Artifacts ---
+# In case files move out of the debug folder
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+Makefile
+*.ninja
+
+# --- Executables ---
+# Matches the specific "lavender" and "asm1" binaries seen in your tree
+lavender
+asm1
+*.exe
+*.out
+*.app
+
+# --- IDEs and Editors ---
+# JetBrains (CLion)
+.idea/
+cmake-build-*/
+
+# VS Code
+.vscode/
+.history/
+
+# Visual Studio
+.vs/
+out/
+
+# --- System & Misc ---
+.DS_Store
+Thumbs.db
+*.log

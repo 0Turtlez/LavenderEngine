@@ -10,7 +10,7 @@ class Camera {
 public:
     // Position Data, later once object is refactored to have the more seperation of visuals and logic
     // then just extend object,
-    Transform position;
+    lavender::math::Transform position;
 private:
 };
 
