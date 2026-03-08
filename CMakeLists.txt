@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
 project(LavenderEngine)
-
 set(CMAKE_CXX_STANDARD 17)
 
 if(APPLE)
@@ -13,8 +12,10 @@ include_directories(engine)
 include_directories(include/glad/include)
 
 # Find GLFW and OpenGL
-find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(Lua REQUIRED)
+find_package(sol2 CONFIG REQUIRED)
 
 # Define Executable
 add_executable(lavender main.cpp
@@ -46,19 +47,15 @@ add_executable(lavender main.cpp
         engine/core/Application/Application.h
         engine/input/keycodes/KeyCodes.cpp
         engine/input/keycodes/KeyCodes.h
+        engine/scripting/LuaBindings/LuaBindngs.cpp
+        engine/scripting/LuaBindings/LuaBindngs.h
 )
-
-if (WIN32)
-    add_custom_command(TARGET lavender POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "C:/msys64/ucrt64/bin/glfw3.dll"
-        $<TARGET_FILE_DIR:lavender>)
-endif ()
-
 
 # Link Frameworks and Libraries to the 'lavender' target
 target_link_libraries(lavender
         PRIVATE
         glfw
         OpenGL::GL
+        sol2::sol2
+        unofficial::lua::lua
 )

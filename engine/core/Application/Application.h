@@ -9,6 +9,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <sol/sol.hpp>
+
+
 
 #include "scene/Scene/Scene.h"
 
@@ -18,6 +21,7 @@ namespace lavender::core {
     public:
         std::string name;
         int width{}, height{};
+        static sol::state lua;
 
         Application(std::string _name, int _width, int _height) :
             name(std::move(_name)), width(_width), height(_height)
@@ -40,6 +44,7 @@ namespace lavender::core {
         static void mainLoop();
         static void setupGLFW();
         static void setupGlad();
+        static void setupLua();
         // Scales canvas to viewport to prevent shearing
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 

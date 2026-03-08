@@ -10,8 +10,7 @@
 
 namespace lavender::math{
     class MathUtils {
-        public
-        :
+        public:
         // Cos sin tangent; decide if i want teh inputs to be deg or radians
         static float sinf(float x);
         static float cosf(float x);

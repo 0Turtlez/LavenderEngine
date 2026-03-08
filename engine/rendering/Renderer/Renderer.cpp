@@ -3,7 +3,8 @@
 //
 #define GL_SILENCE_DEPRECATION
 #include "Renderer.h"
-#include "../engine/core/Object/Object.h"
+#include "core/Object/Object.h"
+#include "math/MathUtils/MathUtils.h"
 
 #include "glad/glad.h"
 #include <iostream>
@@ -11,10 +12,8 @@
 #include <GLFW/glfw3.h>
 
 using namespace lavender::core;
+using namespace lavender::math;
 
-#ifndef PI
-    #define PI 3.14159265358979323846
-#endif
 unsigned int Renderer::vertexShader = 0;
 unsigned int Renderer::fragmentShader = 0;
 unsigned int Renderer::shaderProgram = 0;
@@ -63,6 +62,7 @@ void Renderer::drawScene(Scene &scene) {
     int scaleLoc = glGetUniformLocation(shaderProgram, "scale");
     int colorLoc = glGetUniformLocation(shaderProgram, "objColor");
     int aspectLoc = glGetUniformLocation(shaderProgram, "aspectRatio");
+    int rotationLoc = glGetUniformLocation(shaderProgram, "rotation");
 
     glUniform1f(aspectLoc, 960.0f / 540.0f);
 
@@ -76,6 +76,8 @@ void Renderer::drawScene(Scene &scene) {
         glUniform1f(scaleLoc, object->transform.scale.x / 100.0f);
         glUniform4f(colorLoc, object->color.r, object->color.g, object->color.b, 1.0f);
 
+        float rotationRad = object->transform.rotation.z * (PI / 180.0f);
+        glUniform1f(rotationLoc, rotationRad);
         if (object->isFilled) {
             glDrawArrays(GL_TRIANGLE_FAN,  currentOffset, (GLsizei)object->points.size());
         } else {

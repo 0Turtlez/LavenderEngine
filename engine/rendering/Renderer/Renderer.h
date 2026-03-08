@@ -23,21 +23,34 @@ private:
     static void drawObject(const Object& obj);
 
 
+
     static inline const char *vertexShaderSource = R"glsl(
         #version 330 core
         layout (location = 0) in vec2 aPos; // Change to vec2
         uniform vec2 offset;
         uniform float scale;
         uniform float aspectRatio;
+        uniform float rotation;
 
         void main() {
-            vec2 pos = aPos * scale + offset;
+            // Scale
+            vec2 scaledPos = aPos * scale;
+
+            // Roation 2D, later update to allow for 3D
+            float cosTheta = cos(rotation);
+            float sinTheta = sin(rotation);
+            vec2 rotatedPos = vec2(
+                scaledPos.x * cosTheta - scaledPos.y * sinTheta,
+                scaledPos.x * sinTheta + scaledPos.y * cosTheta
+            );
+
+            // Offset
+            vec2 finalPos = rotatedPos + offset;
 
             // Apply scale and offset manually for now
-            gl_Position = vec4(pos.x / aspectRatio, pos.y, 0.0, 1.0);
+            gl_Position = vec4(finalPos.x / aspectRatio, finalPos.y, 0.0, 1.0);
         }
     )glsl";
-
     static inline const char *fragmentShaderSource = R"glsl(
         #version 330 core
         out vec4 FragColor;

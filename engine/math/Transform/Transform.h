@@ -19,7 +19,7 @@ namespace lavender::math {
     // 3D scaling values
     struct Scale {
         float x , y, z;
-        Scale(float _x = 0, float _y = 0, float _z = 0) : x(_x), y(_y), z(_z) {}
+        Scale(float _x = 1, float _y = 1, float _z = 1) : x(_x), y(_y), z(_z) {}
     };
 
     // 2D point of the center of the Object

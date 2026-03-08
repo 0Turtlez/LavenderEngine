@@ -4,16 +4,20 @@
 
 #include "Application.h"
 
+#include <chrono>
 #include <iostream>
 #include <ostream>
 
+#include "core/Object/Object.h"
 #include "input/keyboard/Keyboard.h"
 #include "input/keycodes/KeyCodes.h"
 #include "rendering/Renderer/Renderer.h"
+#include "scripting/LuaBindings/LuaBindngs.h"
 
 using namespace lavender::core;
 using namespace lavender::input;
 
+sol::state Application::lua;
 Scene Application::scene;
 double Application::pastTime = 0.0;
 double Application::targetFrameRate = 60.0;
@@ -21,11 +25,13 @@ double Application::timePerFrame = 1 / targetFrameRate;
 GLFWwindow* Application::window = nullptr;
 
 void Application::run() {
-    // std::cout<<"run()"<< std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
+
     setupGLFW();
     setupGlad();
+    setupLua();
 
-    // Setup time
+  // Setup time
     pastTime = glfwGetTime();
 
     // Initial scene function call
@@ -107,6 +113,13 @@ void Application::setupGlad() {
         std::cout << "Failed to initialize GLAD" << std::endl;
         // Crash app
     }
+}
+
+void Application::setupLua() {
+    LuaBindngs::setLuaBindings(lua);
+
+
+    lua["scene"] = &scene;
 }
 
 // Scales canvas to viewport to prevent shearing

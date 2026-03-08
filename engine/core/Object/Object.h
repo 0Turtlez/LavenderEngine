@@ -5,7 +5,9 @@
 #ifndef ASM1_OBJECT_H
 #define ASM1_OBJECT_H
 #include <vector>
+#include <sol/function.hpp>
 
+#include "core/Application/Application.h"
 #include "math/Color/Color.h"
 #include "math/Transform/Transform.h"
 
@@ -31,6 +33,13 @@ namespace lavender::core {
         // Position Data
         Transform transform;
 
+        // Lua
+        sol::function luaUpdate;
+
+        void setScript(const std::string& luaCode) {
+            Application::lua.script(luaCode);
+            luaUpdate = Application::lua["update"];
+        }
         // Constructor
         Object(
             const std::vector<Point> &_points,

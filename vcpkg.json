@@ -2,6 +2,7 @@
   "name": "lavender-engine",
   "version": "0.1.0",
   "dependencies": [
+    "lua",
     "sol2",
     "glfw3"
   ]
