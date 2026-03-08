@@ -14,6 +14,9 @@
 namespace lavender::math {
     class Random {
     public:
+
+        // Later refoctor to auto detect for data type
+        // Less is more
         // Random data types
         static int random_int(int min, int max);
         static float random_float(float min, float max);

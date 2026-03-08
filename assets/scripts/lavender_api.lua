@@ -3,8 +3,9 @@
 --- Created by miste.
 --- DateTime: 3/8/2026 2:30 PM
 ---
-
+--- ==================================
 -- MATH & TRANSFORMS
+--- ==================================
 
 ---@class Vector2
 ---@field x number
@@ -24,4 +25,223 @@ local Vector3 = {}
 ---@field w number
 local Vector4 = {}
 
----@class
+---@class Rotation
+---@field x number
+---@field y number
+---@field z number
+local Rotation = {}
+
+---@class Scale
+---@field x number
+---@field y number
+---@field z number
+local Scale = {}
+
+---@class Transform
+---@field position Vector3
+---@field rotation Rotation
+---@field scale Scale
+
+---@return Transform
+function Transform.new() end
+
+--- ==================================
+--- Random
+--- ==================================
+---@class Random
+Random = {}
+
+--- Later refoctor to auto detect for data type
+--- Generates a random Integer between min and max
+---@param min number
+---@param min number
+---@return number
+function Random.randomInt(min, max) end
+
+--- Generates a random Float between min and max
+---@param min number
+---@param min number
+---@return number
+function Random.randomFloat(min, max) end
+
+--- Generates a random Double between min and max
+---@param min number
+---@param min number
+---@return number
+function Random.randomDouble(min, max) end
+
+--- Generates a random bool between return true or false
+---@return boolean
+function Random.randomBool() end
+
+
+--- Generates a random Vector2 between min and max
+---@param min number
+---@param min number
+---@return Vector2
+function Random.randomVector2(min, max) end
+
+--- Generates a random Vector3 between min and max
+---@param min number
+---@param min number
+---@return Vector3
+function Random.randomVector3(min, max) end
+
+--- Generates a random Vector4 between min and max
+---@param min number
+---@param min number
+---@return Vector4
+function Random.randomVector4(min, max) end
+
+--- Generates a random unit Vector2 between min and max
+---@param min number
+---@param min number
+---@return Vector2
+function Random.randomUnitVector2(min, max) end
+
+--- Generates a random unit Vector3 between min and max
+---@param min number
+---@param min number
+---@return Vector3
+function Random.randomUnitVector3(min, max) end
+
+--- Generates a random unit Vector4 between min and max
+---@param min number
+---@param min number
+---@return Vector4
+function Random.randomUnitVector4(min, max) end
+
+
+--- Generates a random Color
+---@return Color
+function Random.randomColor() end
+
+
+--- Generates a random float with a deviation from the base
+---@param base number
+---@param deviation number
+---@return number
+function Random.randomDeviation(base, deviation) end
+
+--- ==================================
+--- Math
+--- ==================================
+Math = {}
+
+--- Returns the sine of x; expects degrees
+---@param x number
+---@return number
+function MathUtils.sinf(x) end
+
+--- Returns the cosine of x; expects degrees
+---@param x number
+---@return number
+function MathUtils.cosf(x) end
+
+--- Returns the tangent of x; expects degrees
+---@param x number
+---@return number
+function MathUtils.tangent(x) end
+
+--- Returns the arc sine of x; expects degrees
+---@param x number
+---@return number
+function MathUtils.asinf(x) end
+
+--- Returns the sine of x; expects degrees
+---@param x number
+---@return number
+function MathUtils.acosf(x) end
+
+--- Returns the sine of x; expects degrees
+---@param x number
+---@return number
+function MathUtils.atanf(x) end
+
+--- Returns the sine of x; expects degrees
+---@param x number
+---@return number
+function MathUtils.atan2f(x) end
+
+--- Returns the sine of x; expects degrees
+---@param degrees number
+---@return number
+function MathUtils.toRadians(x) end
+
+--- Returns the sine of x; expects degrees
+---@param MathUtils number
+---@return number
+function MathUtils.toDegrees(x) end
+
+--- Returns the sine of x; expects degrees
+---@param value number
+---@param min number
+---@param max number
+---@return number
+function MathUtils.clamp(value, min, max) end
+
+--- Returns the sine of x; expects degrees
+---@param value number
+---@return number
+function MathUtils.sqrt(value) end
+
+--- Returns the sine of x; expects degrees
+---@param value number
+---@return number
+function MathUtils.invSqrt(value) end
+
+--- Returns the sine of x; expects degrees
+---@param value number
+---@param power number
+---@return number
+function MathUtils.sqrt(value, power) end
+
+--- Returns the sine of x; expects degrees
+---@param value number
+---@return number
+function MathUtils.abs(value) end
+
+--- Returns the sine of x; expects degrees
+---@param x number
+---@param y number
+---@return number
+function MathUtils.fmod(x, y) end
+
+--- Returns the sine of x; expects degrees
+---@param value number
+---@return number
+function MathUtils.fmod(x, y) end
+--- ==================================
+--- Graphics
+--- ==================================
+---@class Color
+---@field r number
+---@field g number
+---@field b number
+Color = {}
+
+--- Create New Color
+---@overload fun(): Color
+---@param r number
+---@param g number
+---@param b number
+---@return Color
+function Color.new(r, g, b) end
+
+
+--- ==================================
+--- Scene Management
+--- ==================================
+---@class Object
+---@field color Color
+---@field transform Transform
+---@field isFilled boolean
+Object = {}
+
+---@class Scene
+---@field objects Object[] -- Array-like table containing all objects in the scene
+Scene = {}
+
+--- Creates a new Objects, adds it to the scene, and returns a reference to it
+---@return Object
+function Scene.createAndAdd() end

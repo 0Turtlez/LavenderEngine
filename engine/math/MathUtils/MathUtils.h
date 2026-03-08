@@ -25,6 +25,7 @@ namespace lavender::math{
 
         // Misc math functions, alot of these are in prep for scripting abstraction
         static float clamp(float value, float min, float max);
+        // Dont implement, this is poor
         static float lerp(float start, float end, float time);
         static float sqrt(float x);
         static float invSqrt(float x); //inverse square root? wth is that
@@ -36,8 +37,8 @@ namespace lavender::math{
         static float round(float x);
         static float trunc(float x);
         // gonna have to get creative if I want these to be more than just floats
-        static float max(float vals[]);
-        static float min(float vals[]);
+        static float max(float a, float b);
+        static float min(float a, float b);
         // all the other excel like functions average, median, etc
         static bool floatIsEqual(float x, float y); // maybe epsilon input might just hard code it
 
