@@ -27,9 +27,11 @@ Object Object::createPolygon(int vertex, Color color, bool isFilled, float borde
 
     float angle_step = 360.0 / vertex;
 
+    float starting_angle = (vertex % 2 == 0) ? (180.0f / vertex) : 90.0f;
+
     // Store the polygon data based on how many vertex the shape has
     for (int v = 0; v < vertex; v++) {
-        float current_angle = v * angle_step;
+        float current_angle = starting_angle + (v * angle_step);
         float radians = current_angle * (PI / 180.0f);
 
         Point point;

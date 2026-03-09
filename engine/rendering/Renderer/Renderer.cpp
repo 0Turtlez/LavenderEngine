@@ -73,7 +73,7 @@ void Renderer::drawScene(Scene &scene) {
             continue;
         }
         glUniform2f(offsetLoc, object->transform.position.x / 100.0f, object->transform.position.y / 100.0f);
-        glUniform1f(scaleLoc, object->transform.scale.x / 100.0f);
+        glUniform2f(scaleLoc, object->transform.scale.x / 100.0f, object->transform.scale.y / 100.0f);
         glUniform4f(colorLoc, object->color.r, object->color.g, object->color.b, 1.0f);
 
         float rotationRad = object->transform.rotation.z * (PI / 180.0f);

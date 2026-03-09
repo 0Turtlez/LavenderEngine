@@ -28,7 +28,7 @@ private:
         #version 330 core
         layout (location = 0) in vec2 aPos; // Change to vec2
         uniform vec2 offset;
-        uniform float scale;
+        uniform vec2 scale;
         uniform float aspectRatio;
         uniform float rotation;
 

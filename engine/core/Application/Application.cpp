@@ -130,10 +130,10 @@ void Application::framebuffer_size_callback(GLFWwindow* window, int width, int h
 void Application::processInput(GLFWwindow *window) {
 
     // Temporary logic, move into scripting or input managment
-    if (Keyboard::isKeyDown(KeyCode::W)) {
-        std::cout << "W" << std::endl;
-    }
-    if (Keyboard::isKeyDown(KeyCode::Escape)) {
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }
+    // if (Keyboard::isKeyDown(KeyCode::W)) {
+    //     std::cout << "W" << std::endl;
+    // }
+    // if (Keyboard::isKeyDown(KeyCode::Escape)) {
+    //     glfwSetWindowShouldClose(window, GL_TRUE);
+    // }
 }

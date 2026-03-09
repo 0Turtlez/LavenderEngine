@@ -1,71 +1,146 @@
--- Global reference so we can manipulate it in the update loop
-local testShape = nil
+-- Global references
+local paddle1 = nil
+local paddle2 = nil
+local ball = nil
+
+-- Game variables
+local paddleSpeed = 150.0
+local ballVelX = 100.0
+local ballVelY = 100.0
+local screenTop = 100.0
+local screenBottom = -100.0
 
 -- The engine calls this once at startup and passes the Scene pointer
 function start(scene_ref)
-    print(Math.abs(-10))
+    print("--- [LUA] Starting Pong ---")
 
-    print("--- [LUA] Starting Binding Tests ---")
+    -- 1. Create Paddle 1 (Left)
+    local p1Transform = Transform.new()
+    p1Transform.position.x = -165.0
+    p1Transform.position.y = 0.0
+    p1Transform.scale.x = 8.0
+    p1Transform.scale.y = 30.0
+    paddle1 = scene_ref:createAndAdd(4, Color.new(1.0, 0.2, 0.2), true, 0.0, p1Transform)
 
-    -- 1. Test Color (Sprite-Control Region)
-    -- Using the overloaded constructor we bound
-    local myColor = Color.new(0.2, 0.8, 1.0)
-    print("[LUA] Created Color: R=" .. myColor.r .. " G=" .. myColor.g .. " B=" .. myColor.b)
+    -- 2. Create Paddle 2 (Right)
+    local p2Transform = Transform.new()
+    p2Transform.position.x = 165.0
+    p2Transform.position.y = 0.0
+    p2Transform.scale.x = 8.0
+    p2Transform.scale.y = 30.0
+    paddle2 = scene_ref:createAndAdd(4, Color.new(0.2, 0.2, 1.0), true, 0.0, p2Transform)
 
-    -- 2. Test Transform (Transform-Control Region)
-    local myTransform = Transform.new()
+    -- 3. Create the Ball
+    local ballTransform = Transform.new()
+    ballTransform.position.x = 0.0
+    ballTransform.position.y = 0.0
+    ballTransform.scale.x = 5.0
+    ballTransform.scale.y = 5.0
+    -- Let's make the ball an octagon (8 sides)
+    ball = scene_ref:createAndAdd(8, Color.new(1.0, 1.0, 1.0), true, 0.0, ballTransform)
+end
 
-    -- 3. Test Vector3 and Rotation (Vectors Region)
-    -- Accessing the nested properties inside the Transform
-    myTransform.position.x = -50.0
-    myTransform.position.y = 25.0
-    myTransform.rotation.z = 45.0
-
-    myTransform.scale.x = 10.0
-    myTransform.scale.y = 10.0
-    myTransform.scale.z = 10.0
-
-
-    print("[LUA] Set Transform Position: X=" .. myTransform.position.x .. " Y=" .. myTransform.position.y)
-
-    -- 4. Test Scene Management (Scene-Management Region)
-    -- C++ signature: createAndAdd(vertices, color, isFilled, thickness, transform)
-    testShape = scene_ref:createAndAdd(6, myColor, true, 2.0, myTransform)
-
-    -- 5. Test Object modifications
-    if testShape ~= nil then
-        print("[LUA] Successfully created a 6-sided shape!")
-        print("[LUA] Object isFilled state: " .. tostring(testShape.isFilled))
-
-        -- Modify it right after creation to test access
-        testShape.color.r = 1.0 -- Change color to pinkish
+-- A simple helper function to keep paddles on screen
+function clampPaddle(paddle)
+    if paddle.transform.position.y > screenTop then
+        paddle.transform.position.y = screenTop
+    elseif paddle.transform.position.y < screenBottom then
+        paddle.transform.position.y = screenBottom
     end
-
-    print("--- [LUA] Binding Tests Complete ---")
 end
 
 -- The engine calls this every frame
 function update(deltaTime)
-    if (Keyboard.isKeyDown(KeyCode.E)) then
-        print("E")
+    -- ==========================================
+    -- 1. PADDLE MOVEMENT
+    -- ==========================================
+
+    -- Player 1 (W/S)
+    if Keyboard.isKeyDown(KeyCode.W) then
+        paddle1.transform.position.y = paddle1.transform.position.y + (paddleSpeed * deltaTime)
+    elseif Keyboard.isKeyDown(KeyCode.S) then
+        paddle1.transform.position.y = paddle1.transform.position.y - (paddleSpeed * deltaTime)
     end
 
+    -- Player 2 (Up/Down)
+    if Keyboard.isKeyDown(KeyCode.Up) then
+        paddle2.transform.position.y = paddle2.transform.position.y + (paddleSpeed * deltaTime)
+    elseif Keyboard.isKeyDown(KeyCode.Down) then
+        paddle2.transform.position.y = paddle2.transform.position.y - (paddleSpeed * deltaTime)
+    end
 
-    if testShape ~= nil then
-        -- Test real-time Vector3 and Rotation modifications
-        -- Move it to the right and spin it continuously
-        testShape.transform.position.x = testShape.transform.position.x + (80.0 * deltaTime)
-        testShape.transform.position.y = testShape.transform.position.y + (80.0 * deltaTime)
-        testShape.transform.rotation.z = testShape.transform.rotation.z + (-260.0 * deltaTime)
+    -- Keep paddles on the screen
+    clampPaddle(paddle1)
+    clampPaddle(paddle2)
 
+    -- ==========================================
+    -- 2. BALL MOVEMENT & PHYSICS
+    -- ==========================================
+    if ball ~= nil then
+        -- Move the ball
+        ball.transform.position.x = ball.transform.position.x + (ballVelX * deltaTime)
+        ball.transform.position.y = ball.transform.position.y + (ballVelY * deltaTime)
 
-        -- Loop position back so it stays on screen
-        if testShape.transform.position.x > 200.0 then
-            testShape.transform.position.x = -200.0
+        -- Spin the ball for fun
+        ball.transform.rotation.z = ball.transform.rotation.z + (360.0 * deltaTime)
+
+        -- Bounce off top and bottom walls
+        -- We add the ball's Y scale so it bounces on its edge, not its center
+        if ball.transform.position.y + ball.transform.scale.y > screenTop then
+            ball.transform.position.y = screenTop - ball.transform.scale.y
+            ballVelY = -Math.abs(ballVelY)
+        elseif ball.transform.position.y - ball.transform.scale.y < screenBottom then
+            ball.transform.position.y = screenBottom + ball.transform.scale.y
+            ballVelY = Math.abs(ballVelY)
         end
 
-        if testShape.transform.position.y > 150.0 then
-            testShape.transform.position.y = -150.0
+        -- Define ball radius to make collision exact
+        local ballRadiusX = ball.transform.scale.x
+        local ballRadiusY = ball.transform.scale.y
+
+        -- ==========================================
+        -- Basic Paddle Collision (AABB approximation)
+        -- ==========================================
+
+        -- Check Player 1 (Left)
+        local p1RightEdge = paddle1.transform.position.x + paddle1.transform.scale.x
+        local p1LeftEdge = paddle1.transform.position.x - paddle1.transform.scale.x
+
+        if ball.transform.position.x - ballRadiusX < p1RightEdge and
+                ball.transform.position.x + ballRadiusX > p1LeftEdge and
+                Math.abs(ball.transform.position.y - paddle1.transform.position.y) < (paddle1.transform.scale.y + ballRadiusY) then
+
+            -- SNAP POSITION: Move ball completely out of the paddle
+            ball.transform.position.x = p1RightEdge + ballRadiusX
+
+            ballVelX = Math.abs(ballVelX) -- Force positive X velocity (bounce right)
+            -- Increase speed slightly on hit!
+            ballVelX = ballVelX * 1.05
+        end
+
+        -- Check Player 2 (Right)
+        local p2LeftEdge = paddle2.transform.position.x - paddle2.transform.scale.x
+        local p2RightEdge = paddle2.transform.position.x + paddle2.transform.scale.x
+
+        if ball.transform.position.x + ballRadiusX > p2LeftEdge and
+                ball.transform.position.x - ballRadiusX < p2RightEdge and
+                Math.abs(ball.transform.position.y - paddle2.transform.position.y) < (paddle2.transform.scale.y + ballRadiusY) then
+
+            -- SNAP POSITION: Move ball completely out of the paddle
+            ball.transform.position.x = p2LeftEdge - ballRadiusX
+
+            ballVelX = -Math.abs(ballVelX) -- Force negative X velocity (bounce left)
+            -- Increase speed slightly on hit!
+            ballVelX = ballVelX * 1.05
+        end
+
+        -- Reset if it goes out of bounds (Left/Right goal)
+        if ball.transform.position.x > 200.0 or ball.transform.position.x < -200.0 then
+            ball.transform.position.x = 0.0
+            ball.transform.position.y = 0.0
+            -- Reset speed, send to the side that just scored
+            ballVelX = (ballVelX > 0 and -100.0) or 100.0
+            ballVelY = (Math.abs(ballVelY) > 0 and 100.0) or -100.0
         end
     end
 end
