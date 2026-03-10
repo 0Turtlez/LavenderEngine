@@ -11,10 +11,12 @@
 #include "input/keyboard/Keyboard.h"
 #include "math/Random/Random.h"
 #include "math/MathUtils/MathUtils.h"
+#include "rendering/Sprite/sprite.h"
+#include "rendering/Texture/texture.h"
 using namespace lavender::math;
 using namespace lavender::input;
 using namespace lavender::audio;
-
+using namespace lavender::rendering;
 void LuaBindngs::setLuaBindings(sol::state &lua) {
     lua.open_libraries(
         sol::lib::base,
@@ -32,6 +34,7 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
     );
 
     lua.new_usertype<Vector3>("Vector3",
+        sol::constructors<Vector3(), Vector3(float, float, float)>(),
         "x", &Vector3::x,
         "y", &Vector3::y,
         "z", &Vector3::z,
@@ -53,12 +56,14 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
 #pragma endregion Vectors
 #pragma region Transform-Control
     lua.new_usertype<Rotation>("Rotation",
+        sol::constructors<Rotation(), Rotation(float, float, float)>(),
        "x", &Rotation::x,
        "y", &Rotation::y,
        "z", &Rotation::z
     );
 
     lua.new_usertype<Scale>("Scale",
+        sol::constructors<Scale(), Scale(float, float, float)>(),
         "x", &Scale::x,
         "y", &Scale::y,
         "z", &Scale::z
@@ -148,7 +153,15 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
 
     lua.new_usertype<Scene>("Scene",
         "objects", &Scene::objects,
-        "createAndAdd",  &Scene::createAndAdd
+        "createAndAdd",  &Scene::createAndAdd,
+
+        "addSprite", [](Scene& scene, std::string path, Transform transform) {
+            auto* tex = new Texture(path);
+            auto* spr = new Sprite(tex);
+            spr->transform = transform;
+            scene.objects.push_back(spr);
+            return spr;
+        }
     );
 #pragma endregion Scene-Manangment
 #pragma region Input
@@ -189,4 +202,15 @@ lua.new_enum("KeyCode",
     sol::table audioTable = lua.create_named_table("Audio");
     audioTable.set_function("playSound", &AudioEngine::playSound);
 #pragma endregion Audio
+#pragma region Rendering
+    lua.new_usertype<Texture>("Texture",
+        sol::constructors<Texture(std::string)>()
+    );
+
+    lua.new_usertype<Sprite>("Sprite",
+        sol::constructors<Sprite(Texture*, Color)>(),
+        "Texture", &Sprite::texture,
+        sol::base_classes, sol::bases<Object>()
+    );
+#pragma endregion Rendering
 }

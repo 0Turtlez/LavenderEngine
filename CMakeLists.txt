@@ -11,6 +11,7 @@ endif ()
 include_directories(engine)
 include_directories(include/glad/include)
 include_directories(include/miniaudio)
+include_directories(include/stb_image)
 
 # Find GLFW and OpenGL
 find_package(OpenGL REQUIRED)
@@ -53,6 +54,11 @@ add_executable(lavender main.cpp
         include/miniaudio/miniaudio.h
         engine/audio/Audio/AudioEngine.cpp
         engine/audio/Audio/AudioEngine.h
+        engine/rendering/Sprite/sprite.cpp
+        engine/rendering/Sprite/sprite.h
+        engine/rendering/Texture/texture.cpp
+        engine/rendering/Texture/texture.h
+        include/stb_image/stb_image.h
 )
 
 # Link Frameworks and Libraries to the 'lavender' target

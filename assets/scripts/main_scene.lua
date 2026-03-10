@@ -31,20 +31,20 @@ function start(scene_ref)
         local bT = Transform.new()
         bT.position.x = Random.randomFloat(-50.0, 50.0)
         bT.position.y = Random.randomFloat(-50.0, 50.0)
-        
+
         local s = Random.randomFloat(2.0, 5.0)
         bT.scale.x, bT.scale.y = s, s
 
         local newBall = scene_ref:createAndAdd(8, Random.randomColor(), true, 0.0, bT)
-        
+
         -- OPTIMIZATION: Cache references to avoid indexing .transform every frame
         transforms[i] = newBall.transform
         rotations[i] = newBall.transform.rotation
-        
+
         local vx = Random.randomFloat(50.0, 250.0)
         if Random.randomBool() then vx = -vx end
         local vy = Random.randomFloat(-200.0, 200.0)
-        
+
         velocities[i] = { x = vx, y = vy }
     end
 end
@@ -73,7 +73,7 @@ function update(deltaTime)
     local p1RE = p1Pos.x + paddle1.transform.scale.x
     local p1LE = p1Pos.x - paddle1.transform.scale.x
     local p1SY = paddle1.transform.scale.y
-    
+
     local p2LE = p2Pos.x - paddle2.transform.scale.x
     local p2RE = p2Pos.x + paddle2.transform.scale.x
     local p2SY = paddle2.transform.scale.y

@@ -24,6 +24,7 @@ namespace lavender::core {
     // Object holding 2D Object data
     class Object {
     public:
+        virtual ~Object() = default;
         // Later refactor the polygon information to a sprite or visual struct
         std::vector<Point> points;
         Color color;

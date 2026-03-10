@@ -21,18 +21,24 @@ Object* Scene::createAndAdd(int vertices, Color color, bool isFilled, float thic
 
 // Runs at start of program
 void Scene::start() {
-    auto result = Application::lua.script_file("assets/scripts/main_scene.lua");
+    try {
+        auto result = Application::lua.script_file("assets/scripts/main_scene.lua");
+        if (!result.valid()) {
+            sol::error err = result;
+            std::cerr << "LUA LOAD ERROR: " << err.what() << std::endl;
+            return;
+        }
 
-    if (!result.valid()) {
-        sol::error err = result;
-        std::cerr << "LUA ERROR: " << err.what() << std::endl;
-    }
-
-    if (result.valid()) {
-        sol::function luaStart = Application::lua["start"];
-        luaStart(this);
-
-        luaUpdateFunc = Application::lua["update"];
+        sol::protected_function luaStart = Application::lua["start"];
+        if (luaStart.valid()) {
+            auto callResult = luaStart(this);
+            if (!callResult.valid()) {
+                sol::error err = callResult;
+                std::cerr << "LUA RUNTIME ERROR: " << err.what() << std::endl;
+            }
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "C++ EXCEPTION: " << e.what() << std::endl;
     }
 }
 

@@ -11,6 +11,8 @@
 #include <ostream>
 #include <GLFW/glfw3.h>
 
+#include "rendering/Sprite/sprite.h"
+
 using namespace lavender::core;
 using namespace lavender::math;
 
@@ -20,6 +22,8 @@ unsigned int Renderer::shaderProgram = 0;
 unsigned int Renderer::VAO = 0;
 unsigned int Renderer::VBO = 0;
 unsigned int Renderer::EBO = 0;
+unsigned int Renderer::quadVAO = 0;
+unsigned int Renderer::quadVBO = 0;
 
 float vertices[] = {
     0.5f,  0.5f, 0.0f,  // top right
@@ -35,7 +39,7 @@ unsigned int indices[] = {  // note that we start from 0!
 void Renderer::setupRenderer() {
     setUpShaders();
     setUpVertexObjects(vertices, sizeof(vertices), indices, sizeof(indices));
-
+    setUpQuadVertexObjects();
 }
 void Renderer::drawScene(Scene &scene) {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -46,16 +50,13 @@ void Renderer::drawScene(Scene &scene) {
         if (object == nullptr) {
             continue;
         }
-        masterBuffer.insert(masterBuffer.end(), object->points.begin(), object->points.end());
-    }
 
+        if (dynamic_cast<Sprite*>(object) == nullptr) {
+            masterBuffer.insert(masterBuffer.end(), object->points.begin(), object->points.end());
+        }
+    }
     // Bind State
     glUseProgram(shaderProgram);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    // Upload all data to GPU in one call
-    glBufferData(GL_ARRAY_BUFFER, masterBuffer.size() * sizeof(Point), masterBuffer.data(), GL_DYNAMIC_DRAW);
 
     // Cache shader uniform location
     int offsetLoc = glGetUniformLocation(shaderProgram, "offset");
@@ -66,25 +67,38 @@ void Renderer::drawScene(Scene &scene) {
 
     glUniform1f(aspectLoc, 960.0f / 540.0f);
 
+
     // Draw calls into master buffer
     int currentOffset = 0;
     for (Object* object : scene.objects) {
         if (object == nullptr) {
             continue;
         }
-        glUniform2f(offsetLoc, object->transform.position.x / 100.0f, object->transform.position.y / 100.0f);
-        glUniform2f(scaleLoc, object->transform.scale.x / 100.0f, object->transform.scale.y / 100.0f);
-        glUniform4f(colorLoc, object->color.r, object->color.g, object->color.b, 1.0f);
-
-        float rotationRad = object->transform.rotation.z * (PI / 180.0f);
-        glUniform1f(rotationLoc, rotationRad);
-        if (object->isFilled) {
-            glDrawArrays(GL_TRIANGLE_FAN,  currentOffset, (GLsizei)object->points.size());
-        } else {
-            glDrawArrays(GL_LINE_LOOP, currentOffset, (GLsizei)object->points.size());
+        Sprite* spr = dynamic_cast<Sprite*>(object);
+        if (spr) {
+            drawSprite(*spr, offsetLoc, scaleLoc, colorLoc, rotationLoc, aspectLoc);
         }
+        else {
+            glBindVertexArray(VAO);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-        currentOffset += object->points.size();
+            // Upload all data to GPU in one call
+            glBufferData(GL_ARRAY_BUFFER, masterBuffer.size() * sizeof(Point), masterBuffer.data(), GL_DYNAMIC_DRAW);
+
+            glUniform2f(offsetLoc, object->transform.position.x / 100.0f, object->transform.position.y / 100.0f);
+            glUniform2f(scaleLoc, object->transform.scale.x / 100.0f, object->transform.scale.y / 100.0f);
+            glUniform4f(colorLoc, object->color.r, object->color.g, object->color.b, 1.0f);
+
+            float rotationRad = object->transform.rotation.z * (PI / 180.0f);
+            glUniform1f(rotationLoc, rotationRad);
+            if (object->isFilled) {
+                glDrawArrays(GL_TRIANGLE_FAN,  currentOffset, (GLsizei)object->points.size());
+            } else {
+                glDrawArrays(GL_LINE_LOOP, currentOffset, (GLsizei)object->points.size());
+            }
+
+            currentOffset += object->points.size();
+        }
     }
 
     // Unbind state
@@ -174,6 +188,38 @@ void Renderer::setUpVertexObjects(float vertices[], size_t sizeVertices, unsigne
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
+void Renderer::setUpQuadVertexObjects() {
+
+    // Enable Alpha Blending for transparent PNGs
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Define quad
+    float quadVertices[] = {
+        // Pos      // Tex
+        -0.5f,  0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.0f, 0.0f
+    };
+
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+    // Position attribute (Location 0)
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // Texture Coordinate attribute (Location 1)
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+}
+
 // Draws objects polygon
 // later refactor to need just the polygon data, saves memory and speeds up draw
 void Renderer::drawObject(const Object &obj) {
@@ -225,4 +271,26 @@ void Renderer::drawObject(const Object &obj) {
     // glEnd();
     //
     // glPopMatrix();
+}
+
+void Renderer::drawSprite(const Sprite &sprite, int offsetLoc, int scaleLoc, int colorLoc, int rotationLoc,
+    int aspectLoc) {
+
+    // 1. Set Uniforms
+    glUniform2f(offsetLoc, sprite.transform.position.x / 100.0f, sprite.transform.position.y / 100.0f);
+    glUniform2f(scaleLoc, sprite.transform.scale.x / 100.0f, sprite.transform.scale.y / 100.0f);
+    glUniform4f(colorLoc, sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a);
+
+    float rotationRad = sprite.transform.rotation.z * (PI / 180.0f);
+    glUniform1f(rotationLoc, rotationRad);
+
+    // 2. Bind Texture
+    if (sprite.texture) {
+        sprite.texture->bind(0); // Bind to slot 0
+    }
+
+    // 3. Draw the static quad
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glBindVertexArray(0);
 }
