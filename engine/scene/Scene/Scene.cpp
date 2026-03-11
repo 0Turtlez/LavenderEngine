@@ -4,7 +4,7 @@
 
 #include "Scene.h"
 #include "core/Object/Object.h"
-
+#include "sol/function.hpp"
 using namespace lavender::core;
 using namespace lavender::math;
 #ifndef PI
@@ -37,6 +37,8 @@ void Scene::start() {
                 std::cerr << "LUA RUNTIME ERROR: " << err.what() << std::endl;
             }
         }
+
+        luaUpdateFunc = Application::lua["update"];
     } catch (const std::exception& e) {
         std::cerr << "C++ EXCEPTION: " << e.what() << std::endl;
     }
@@ -44,7 +46,10 @@ void Scene::start() {
 
 // Ran every frame
 void Scene::update(float deltaTime) {
+    // std::cout << "Updating method" << std::endl;
     if (luaUpdateFunc.valid()) {
+        // std::cout << "Updating scene" << std::endl;
+
         luaUpdateFunc(deltaTime);
     }
 }

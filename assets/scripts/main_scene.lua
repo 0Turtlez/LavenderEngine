@@ -11,6 +11,7 @@ local screenTop, screenBottom = 100.0, -100.0
 local goalLimit = 180.0
 
 -- [[ STARTUP ]]
+-- [[ STARTUP ]]
 function start(scene_ref)
     print("--- [LUA] Starting PONG STRESS TEST ---")
     print("Spawning " .. NUM_BALLS .. " objects. Watch those frame times!")
@@ -35,7 +36,9 @@ function start(scene_ref)
         local s = Random.randomFloat(2.0, 5.0)
         bT.scale.x, bT.scale.y = s, s
 
-        local newBall = scene_ref:createAndAdd(8, Random.randomColor(), true, 0.0, bT)
+        -- NEW: Spawn the Bean sprite instead of a polygon
+        local newBall = scene_ref:addSprite("assets/textures/Bean.png", bT)
+        newBall.color = Color.new(1.0, 1.0, 1.0) -- Re-apply the randomized color
 
         -- OPTIMIZATION: Cache references to avoid indexing .transform every frame
         transforms[i] = newBall.transform
@@ -57,6 +60,7 @@ end
 
 -- [[ UPDATE LOOP ]]
 function update(deltaTime)
+    if Keyboard.isKeyDown(KeyCode.P) then return end
     -- 1. PADDLE INPUT (W/S & Arrows)
     local p1Pos = paddle1.transform.position
     if Keyboard.isKeyDown(KeyCode.W) then p1Pos.y = p1Pos.y + (paddleSpeed * deltaTime)

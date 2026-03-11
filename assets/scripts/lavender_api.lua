@@ -246,6 +246,11 @@ Scene = {}
 ---@return Object
 function Scene.createAndAdd() end
 
+--- Creates a Sprite from a texture path, adds it to scene and returns reference
+---@param path string
+---@param transform Transform
+---@return Sprite
+function Scene:addSprite(path, transform) end
 
 --- ==================================
 --- Input
@@ -284,3 +289,24 @@ Audio = {}
 --- Plays sound by path
 ---@param path string
 function Audio.playSound(path) end
+
+
+--- ==================================
+--- Rendering
+--- ==================================
+
+---@class Texture
+Texture = {}
+
+---@param path string
+---@return Texture
+function Texture.new(path) end
+
+---@class Sprite : Object
+---@field texture Texture
+Sprite = {}
+
+---@param texture Texture
+---@param color Color
+---@return Sprite
+function Sprite.new(texture, color) end

@@ -69,9 +69,14 @@ private:
 
         uniform vec4 objColor;
         uniform sampler2D image;
+        uniform bool useTexture;
 
         void main() {
-            FragColor = texture(image, TextureCoord) * objColor;
+            if (useTexture) {
+                FragColor = texture(image, TextureCoord) * objColor;
+            } else {
+                FragColor = objColor;
+            }
         }
     )glsl";
 };

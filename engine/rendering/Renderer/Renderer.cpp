@@ -64,8 +64,15 @@ void Renderer::drawScene(Scene &scene) {
     int colorLoc = glGetUniformLocation(shaderProgram, "objColor");
     int aspectLoc = glGetUniformLocation(shaderProgram, "aspectRatio");
     int rotationLoc = glGetUniformLocation(shaderProgram, "rotation");
+    int useTextureLoc = glGetUniformLocation(shaderProgram, "useTexture");
 
     glUniform1f(aspectLoc, 960.0f / 540.0f);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Upload all data to GPU in one call
+    glBufferData(GL_ARRAY_BUFFER, masterBuffer.size() * sizeof(Point), masterBuffer.data(), GL_DYNAMIC_DRAW);
 
 
     // Draw calls into master buffer
@@ -76,14 +83,13 @@ void Renderer::drawScene(Scene &scene) {
         }
         Sprite* spr = dynamic_cast<Sprite*>(object);
         if (spr) {
+            glUniform1i(useTextureLoc, 1);
             drawSprite(*spr, offsetLoc, scaleLoc, colorLoc, rotationLoc, aspectLoc);
         }
         else {
-            glBindVertexArray(VAO);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glUniform1i(useTextureLoc, 0);
 
-            // Upload all data to GPU in one call
-            glBufferData(GL_ARRAY_BUFFER, masterBuffer.size() * sizeof(Point), masterBuffer.data(), GL_DYNAMIC_DRAW);
+            glBindVertexArray(VAO);
 
             glUniform2f(offsetLoc, object->transform.position.x / 100.0f, object->transform.position.y / 100.0f);
             glUniform2f(scaleLoc, object->transform.scale.x / 100.0f, object->transform.scale.y / 100.0f);
