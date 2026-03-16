@@ -4,6 +4,7 @@ local transforms = {}      -- Caching the Transform component itself
 local rotations = {}       -- Caching the Rotation component itself
 local velocities = {}      -- Table of {x, y} velocity pairs
 
+
 -- [[ STRESS TEST PARAMETERS ]]
 local NUM_BALLS = 1
 local paddleSpeed = 150.0
@@ -13,6 +14,7 @@ local goalLimit = 180.0
 -- [[ STARTUP ]]
 -- [[ STARTUP ]]
 function start(scene_ref)
+    Math.
     print("--- [LUA] Starting PONG STRESS TEST ---")
     print("Spawning " .. NUM_BALLS .. " objects. Watch those frame times!")
 

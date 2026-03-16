@@ -10,6 +10,7 @@
 #include "core/Application/Application.h"
 #include "math/Color/Color.h"
 #include "math/Transform/Transform.h"
+#include "rendering/Texture/texture.h"
 
 using namespace lavender::math;
 
@@ -24,10 +25,11 @@ namespace lavender::core {
     // Object holding 2D Object data
     class Object {
     public:
+        rendering::Texture* texture = nullptr;
+        Color color;
         virtual ~Object() = default;
         // Later refactor the polygon information to a sprite or visual struct
         std::vector<Point> points;
-        Color color;
         bool isFilled;
         float borderThickness;
 

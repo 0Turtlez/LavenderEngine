@@ -81,20 +81,20 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
     );
 #pragma endregion Transform-Control
 #pragma region Random
-    sol::table randomTable = lua.create_named_table("Random");
+    sol::table randomTable = lua.create_named_table("random");
 
-    randomTable.set_function("randomInt", &Random::random_int);
-    randomTable.set_function("randomFloat", &Random::random_float);
-    randomTable.set_function("randomDouble", &Random::random_float);
-    randomTable.set_function("randomBool", &Random::random_bool);
-    randomTable.set_function("randomVector2", &Random::random_vector2);
-    randomTable.set_function("randomVector3", &Random::random_vector3);
-    randomTable.set_function("randomVector4", &Random::random_vector4);
-    randomTable.set_function("randomUnitVector2", &Random::random_unit_vector2);
-    randomTable.set_function("randomUnitVector3", &Random::random_unit_vector3);
-    randomTable.set_function("randomUnitVector4", &Random::random_unit_vector4);
-    randomTable.set_function("randomColor", &Random::random_color);
-    randomTable.set_function("randomDeviation", &Random::random_deviation);
+    randomTable.set_function("int", &Random::random_int);
+    randomTable.set_function("float", &Random::random_float);
+    randomTable.set_function("double", &Random::random_float);
+    randomTable.set_function("bool", &Random::random_bool);
+    randomTable.set_function("vector2", &Random::random_vector2);
+    randomTable.set_function("vector3", &Random::random_vector3);
+    randomTable.set_function("vector4", &Random::random_vector4);
+    randomTable.set_function("unit_vector2", &Random::random_unit_vector2);
+    randomTable.set_function("unit_vector3", &Random::random_unit_vector3);
+    randomTable.set_function("unit_vector4", &Random::random_unit_vector4);
+    randomTable.set_function("color", &Random::random_color);
+    randomTable.set_function("deviation", &Random::random_deviation);
 
     // These will take more work
     // randomTable.set_function("shuffleVector", &Random::shuffle_vector);
@@ -102,25 +102,25 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
 
 #pragma endregion Random
 #pragma region Math
-    sol::table mathTable = lua.create_named_table("Math");
+    sol::table mathTable = lua.create_named_table("math");
     // Cos sin tangent
-    mathTable.set_function("sinf", &MathUtils::sinf);
-    mathTable.set_function("cosf", &MathUtils::cosf);
-    mathTable.set_function("tanf", &MathUtils::tanf);
-    mathTable.set_function("asinf", &MathUtils::asinf);
-    mathTable.set_function("acosf", &MathUtils::acosf);
-    mathTable.set_function("atanf", &MathUtils::atanf);
-    mathTable.set_function("atan2f", &MathUtils::atan2f);
+    mathTable.set_function("sin", &MathUtils::sinf);
+    mathTable.set_function("cos", &MathUtils::cosf);
+    mathTable.set_function("tan", &MathUtils::tanf);
+    mathTable.set_function("asin", &MathUtils::asinf);
+    mathTable.set_function("acos", &MathUtils::acosf);
+    mathTable.set_function("atan", &MathUtils::atanf);
+    mathTable.set_function("atan2", &MathUtils::atan2f);
 
     // Convert Rad <-> Deg
-    mathTable.set_function("toRadians", &MathUtils::toRadians);
-    mathTable.set_function("toDegrees", &MathUtils::toDegrees);
+    mathTable.set_function("to_radians", &MathUtils::toRadians);
+    mathTable.set_function("to_degrees", &MathUtils::toDegrees);
 
     // Misc math functions
     mathTable.set_function("clamp", &MathUtils::clamp);
     mathTable.set_function("lerp", &MathUtils::lerp);
     mathTable.set_function("sqrt", &MathUtils::sqrt);
-    mathTable.set_function("invSqrt", &MathUtils::invSqrt);
+    mathTable.set_function("inv_sqrt", &MathUtils::invSqrt);
     mathTable.set_function("pow", &MathUtils::pow);
     mathTable.set_function("abs", &MathUtils::abs);
     mathTable.set_function("fmod", &MathUtils::fmod);
@@ -134,29 +134,37 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
     mathTable.set_function("min", &MathUtils::min);
 
     // Float comparison
-    mathTable.set_function("floatIsEqual", &MathUtils::floatIsEqual);
+    mathTable.set_function("float_is_equal", &MathUtils::floatIsEqual);
 #pragma endregion Math
 #pragma region Sprite-Control
     lua.new_usertype<Color>("Color",
     sol::constructors<Color(), Color(float, float, float)>(),
         "r", &Color::r,
         "g", &Color::g,
-        "b", &Color::b
+        "b", &Color::b,
+
+        // constants for faster completion
+        "white", sol::var(Color(1.0f, 1.0f, 1.0f)),
+        "black", sol::var(Color(0.0f, 0.0f, 0.0f)),
+        "red",   sol::var(Color(1.0f, 0.0f, 0.0f)),
+        "green", sol::var(Color(0.0f, 1.0f, 0.0f)),
+        "blue",  sol::var(Color(0.0f, 0.0f, 1.0f))
     );
 #pragma endregion Sprite-Control
 #pragma region Scene-Manangment
     lua.new_usertype<Object>("Object",
         "color", &Object::color,
         "transform", &Object::transform,
-        "isFilled", &Object::isFilled
+        "is_filled", &Object::isFilled,
+        "texture", &Object::texture
         // We can't easily bind 'points' yet because it's a std::vector of custom structs
     );
 
     lua.new_usertype<Scene>("Scene",
         "objects", &Scene::objects,
-        "createAndAdd",  &Scene::createAndAdd,
+        "create_and_add",  &Scene::createAndAdd,
 
-        "addSprite", [](Scene& scene, std::string path, Transform transform) {
+        "add_sprite", [](Scene& scene, std::string path, Transform transform) {
             auto* tex = new Texture(path);
             auto* spr = new Sprite(tex);
             spr->transform = transform;
@@ -166,7 +174,7 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
     );
 #pragma endregion Scene-Manangment
 #pragma region Input
-lua.new_enum("KeyCode",
+lua.new_enum("Key",
         "Unknown", KeyCode::Unknown,
         "A", KeyCode::A, "B", KeyCode::B, "C", KeyCode::C, "D", KeyCode::D,
         "E", KeyCode::E, "F", KeyCode::F, "G", KeyCode::G, "H", KeyCode::H,
@@ -195,16 +203,16 @@ lua.new_enum("KeyCode",
         "Space", KeyCode::Space
     );
 
-    sol::table keyboardTable = lua.create_named_table("Keyboard");
+    sol::table keyboardTable = lua.create_named_table("keyboard");
 
-    keyboardTable.set_function("isKeyDown", &Keyboard::isKeyDown);
+    keyboardTable.set_function("is_down", &Keyboard::isKeyDown);
 #pragma endregion Input
 #pragma region Audio
-    sol::table audioTable = lua.create_named_table("Audio");
-    audioTable.set_function("playSound", &AudioEngine::playSound);
+    sol::table audioTable = lua.create_named_table("audio");
+    audioTable.set_function("play", &AudioEngine::playSound);
 #pragma endregion Audio
 #pragma region Rendering
-    lua.new_usertype<Texture>("Texture",
+    lua.new_usertype<Texture>("texture",
         sol::constructors<Texture(std::string)>()
     );
 

@@ -48,169 +48,197 @@ function Transform.new() end
 --- ==================================
 --- Random
 --- ==================================
----@class Random
-Random = {}
+---@class random
+random = {}
 
 --- Later refoctor to auto detect for data type
 --- Generates a random Integer between min and max
 ---@param min number
----@param min number
+---@param max number
 ---@return number
-function Random.randomInt(min, max) end
+function random.int(min, max) end
 
 --- Generates a random Float between min and max
 ---@param min number
----@param min number
+---@param max number
 ---@return number
-function Random.randomFloat(min, max) end
+function random.float(min, max) end
 
 --- Generates a random Double between min and max
 ---@param min number
----@param min number
+---@param max number
 ---@return number
-function Random.randomDouble(min, max) end
+function random.double(min, max) end
 
 --- Generates a random bool between return true or false
 ---@return boolean
-function Random.randomBool() end
-
+function random.bool() end
 
 --- Generates a random Vector2 between min and max
 ---@param min number
----@param min number
+---@param max number
 ---@return Vector2
-function Random.randomVector2(min, max) end
+function random.vector2(min, max) end
 
 --- Generates a random Vector3 between min and max
 ---@param min number
----@param min number
+---@param max number
 ---@return Vector3
-function Random.randomVector3(min, max) end
+function random.vector3(min, max) end
 
 --- Generates a random Vector4 between min and max
 ---@param min number
----@param min number
+---@param max number
 ---@return Vector4
-function Random.randomVector4(min, max) end
+function random.vector4(min, max) end
 
 --- Generates a random unit Vector2 between min and max
----@param min number
----@param min number
 ---@return Vector2
-function Random.randomUnitVector2(min, max) end
+function random.unit_vector2() end
 
 --- Generates a random unit Vector3 between min and max
----@param min number
----@param min number
 ---@return Vector3
-function Random.randomUnitVector3(min, max) end
+function random.unit_vector3() end
 
 --- Generates a random unit Vector4 between min and max
----@param min number
----@param min number
 ---@return Vector4
-function Random.randomUnitVector4(min, max) end
-
+function random.unit_vector4() end
 
 --- Generates a random Color
 ---@return Color
-function Random.randomColor() end
+function random.color() end
 
 
 --- Generates a random float with a deviation from the base
 ---@param base number
 ---@param deviation number
 ---@return number
-function Random.randomDeviation(base, deviation) end
+function random.deviation(base, deviation) end
 
 --- ==================================
 --- Math
 --- ==================================
-Math = {}
+math = {}
 
 --- Returns the sine of x; expects degrees
 ---@param x number
 ---@return number
-function MathUtils.sinf(x) end
+function math.sin(x) end
 
 --- Returns the cosine of x; expects degrees
 ---@param x number
 ---@return number
-function MathUtils.cosf(x) end
+function math.cos(x) end
 
 --- Returns the tangent of x; expects degrees
 ---@param x number
 ---@return number
-function MathUtils.tangent(x) end
+function math.tan(x) end
 
 --- Returns the arc sine of x; expects degrees
 ---@param x number
 ---@return number
-function MathUtils.asinf(x) end
+function math.asin(x) end
 
---- Returns the sine of x; expects degrees
+--- Returns the arc cosine of x; expects degrees
 ---@param x number
 ---@return number
-function MathUtils.acosf(x) end
+function math.acos(x) end
 
---- Returns the sine of x; expects degrees
+--- Returns the arc tangent of x; expects degrees
 ---@param x number
 ---@return number
-function MathUtils.atanf(x) end
+function math.atan(x) end
 
---- Returns the sine of x; expects degrees
+--- Returns the arc tangent of y/x; expects degrees
+---@param y number
 ---@param x number
 ---@return number
-function MathUtils.atan2f(x) end
+function math.atan2(y, x) end
 
---- Returns the sine of x; expects degrees
+--- Converts degrees to radians
 ---@param degrees number
 ---@return number
-function MathUtils.toRadians(x) end
+function math.to_radians(degrees) end
 
---- Returns the sine of x; expects degrees
----@param MathUtils number
+--- Converts radians to degrees
+---@param radians number
 ---@return number
-function MathUtils.toDegrees(x) end
+function math.to_degrees(radians) end
 
---- Returns the sine of x; expects degrees
+--- Clamps a value between a minimum and maximum range
 ---@param value number
 ---@param min number
 ---@param max number
 ---@return number
-function MathUtils.clamp(value, min, max) end
+function math.clamp(value, min, max) end
 
---- Returns the sine of x; expects degrees
+--- Linearly interpolates between a and b by time t
+---@param a number
+---@param b number
+---@param t number
+---@return number
+function math.lerp(a, b, t) end
+
+--- Returns the square root of a value
 ---@param value number
 ---@return number
-function MathUtils.sqrt(value) end
+function math.sqrt(value) end
 
---- Returns the sine of x; expects degrees
+--- Returns the inverse square root (1 / sqrt(x))
 ---@param value number
 ---@return number
-function MathUtils.invSqrt(value) end
+function math.inv_sqrt(value) end
 
---- Returns the sine of x; expects degrees
----@param value number
----@param power number
----@return number
-function MathUtils.sqrt(value, power) end
-
---- Returns the sine of x; expects degrees
+--- Returns the absolute value
 ---@param value number
 ---@return number
-function MathUtils.abs(value) end
+function math.abs(value) end
 
---- Returns the sine of x; expects degrees
+--- Returns the floating-point remainder of x/y
 ---@param x number
 ---@param y number
 ---@return number
-function MathUtils.fmod(x, y) end
+function math.fmod(x, y) end
 
---- Returns the sine of x; expects degrees
----@param value number
+--- Returns the largest integer less than or equal to x
+---@param x number
 ---@return number
-function MathUtils.fmod(x, y) end
+function math.floor(x) end
+
+--- Returns the smallest integer greater than or equal to x
+---@param x number
+---@return number
+function math.ceil(x) end
+
+--- Returns the value rounded to the nearest integer
+---@param x number
+---@return number
+function math.round(x) end
+
+--- Returns the integer part of x (removes fractional part)
+---@param x number
+---@return number
+function math.trunc(x) end
+
+--- Returns the smaller of two values
+---@param a number
+---@param b number
+---@return number
+function math.min(a, b) end
+
+--- Returns the larger of two values
+---@param a number
+---@param b number
+---@return number
+function math.max(a, b) end
+
+--- Checks if two floats are nearly equal based on an epsilon
+---@param a number
+---@param b number
+---@return boolean
+function math.float_is_equal(a, b) end
+
 --- ==================================
 --- Graphics
 --- ==================================
@@ -220,7 +248,7 @@ function MathUtils.fmod(x, y) end
 ---@field b number
 Color = {}
 
---- Create New Color
+--- Creates a new Color object
 ---@overload fun(): Color
 ---@param r number
 ---@param g number
@@ -228,6 +256,10 @@ Color = {}
 ---@return Color
 function Color.new(r, g, b) end
 
+---@type Color
+Color.white = { r = 1, g = 1, b = 1 }
+---@type Color
+Color.black = { r = 0, g = 0, b = 0 }
 
 --- ==================================
 --- Scene Management
@@ -235,29 +267,33 @@ function Color.new(r, g, b) end
 ---@class Object
 ---@field color Color
 ---@field transform Transform
----@field isFilled boolean
+---@field texture Texture | nil
+---@field is_filled boolean
 Object = {}
+
+--- Creates a new Objects, adds it to the scene, and returns a reference to it
+---@return Object
+function Object.new() end
 
 ---@class Scene
 ---@field objects Object[] -- Array-like table containing all objects in the scene
 Scene = {}
 
---- Creates a new Objects, adds it to the scene, and returns a reference to it
----@return Object
-function Scene.createAndAdd() end
+
+function Scene.create_and_add() end
 
 --- Creates a Sprite from a texture path, adds it to scene and returns reference
 ---@param path string
 ---@param transform Transform
 ---@return Sprite
-function Scene:addSprite(path, transform) end
+function Scene:add_sprite(path, transform) end
 
 --- ==================================
 --- Input
 --- ==================================
 
----@class KeyCode
-KeyCode = {
+---@class Key
+Key = {
     Unknown = 0,
     A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, I = 9, J = 10,
     K = 11, L = 12, M = 13, N = 14, O = 15, P = 16, Q = 17, R = 18, S = 19, T = 20,
@@ -270,25 +306,24 @@ KeyCode = {
     Space = 55
 }
 
----@class Keyboard
-Keyboard = {}
+---@class keyboard
+keyboard = {}
 
 --- Returns true if the specified key is currently being pressed down
----@param key KeyCode
+---@param key Key
 ---@return boolean
-function Keyboard.isKeyDown(key) end
-
+function Keyboard.is_down(key) end
 
 --- ==================================
 --- Audio
 --- ==================================
 
----@class Audio
-Audio = {}
+---@class audio
+audio = {}
 
 --- Plays sound by path
 ---@param path string
-function Audio.playSound(path) end
+function audio.play(path) end
 
 
 --- ==================================
@@ -298,6 +333,7 @@ function Audio.playSound(path) end
 ---@class Texture
 Texture = {}
 
+--- Creates a new Texture from an image file path
 ---@param path string
 ---@return Texture
 function Texture.new(path) end
@@ -306,6 +342,7 @@ function Texture.new(path) end
 ---@field texture Texture
 Sprite = {}
 
+--- Creates a new Sprite using a texture and a color tint
 ---@param texture Texture
 ---@param color Color
 ---@return Sprite
