@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "dependencies": [
     "lua",
+    "luajit",
     "sol2",
     "glfw3"
   ]

@@ -1,16 +1,17 @@
-paddle = nil
-
 function start(scene)
     paddle = Object.new()
-    paddle.texture = Texture.new("assets/textures/blank.png")
-    paddle.color = Color.white
-    paddle.transform = Transform.new(10, 10)
-    paddle.transform.scale = Scale.new(30, 8)
+    paddle.transform.scale = Scale(10, 10, 10)
+    paddle.color = Color.new(1, 1 ,1)
+    scene:create_and_add()
 end
 
 function update(dt)
-    pt = paddle.transform
-    if keyboard.is_down(Key.W) then
-        pt = pt + ( 10 * dt )
-    end
+    local v2 = Vector2.new(1, 2)
+    --v2 = random.vector2(0, 100)
+
+    v2 = v2:normalize()
+    print(v2.x .. " " .. v2.y)
+    print()
+
+
 end

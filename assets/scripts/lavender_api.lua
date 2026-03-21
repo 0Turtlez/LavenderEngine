@@ -7,35 +7,62 @@
 -- MATH & TRANSFORMS
 --- ==================================
 
+--TODO: figure out weather ? is needed or not
 ---@class Vector2
----@field x number
----@field y number
-local Vector2 = {}
+---@field x? number
+---@field y? number
+Vector2 = {}
+
+---Returns the magnitude of the vector
+---@return number
+function Vector2:length() end
+
+---Normalizes the vector in-place
+---@return Vector2
+function Vector2:normalize() end
+
+---Constructor for new vector 2
+---@param x number
+---@param y number
+---@return Vector2
+function Vector2.new(x,y) end
 
 ---@class Vector3
 ---@field x number
 ---@field y number
 ---@field z number
-local Vector3 = {}
+Vector3 = {}
+---Returns the magnitude of the vector
+---@return number
+function Vector3:length() end
 
+---Normalizes the vector in-place
+---@return Vector3
+function Vector3:normalize() end
+
+---Constructor for new vector 2
+---@param x number
+---@param y number
+---@return Vector2
+function Vector2.new(x,y) end
 ---@class Vector4
 ---@field x number
 ---@field y number
 ---@field z number
 ---@field w number
-local Vector4 = {}
+Vector4 = {}
 
 ---@class Rotation
 ---@field x number
 ---@field y number
 ---@field z number
-local Rotation = {}
+Rotation = {}
 
 ---@class Scale
 ---@field x number
 ---@field y number
 ---@field z number
-local Scale = {}
+Scale = {}
 
 ---@class Transform
 ---@field position Vector3
@@ -279,7 +306,8 @@ function Object.new() end
 ---@field objects Object[] -- Array-like table containing all objects in the scene
 Scene = {}
 
-
+--TODO: Auto add objects to scene, move from add objects to scene, rather focus on scene manip than control
+--TODO: also i believe i broke this
 function Scene.create_and_add() end
 
 --- Creates a Sprite from a texture path, adds it to scene and returns reference

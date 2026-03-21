@@ -22,11 +22,16 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
         sol::lib::base,
         sol::lib::math,
         sol::lib::package,
-        sol::lib::table
+        sol::lib::table,
+        sol::lib::jit,
+        sol::lib::ffi
     );
 
+// TODO: Make documentation on each of these
 #pragma region Vectors
     lua.new_usertype<Vector2>("Vector2",
+        sol::constructors<Vector2(), Vector2(float, float)>(),
+
         "x", &Vector2::x,
         "y", &Vector2::y,
 
@@ -44,15 +49,17 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
         "normalize", &Vector3::normalize
     );
 
-    lua.new_usertype<Vector4>("Vector4",
-        "x", &Vector4::x,
-        "y", &Vector4::y,
-        "z", &Vector4::z,
-        "w", &Vector4::w,
+        lua.new_usertype<Vector4>("Vector4",
+            sol::constructors<Vector4(), Vector4(float, float, float, float)>(),
 
-        "length", &Vector4::length,
-        "normalize", &Vector4::normalize
-    );
+            "x", &Vector4::x,
+            "y", &Vector4::y,
+            "z", &Vector4::z,
+            "w", &Vector4::w,
+
+            "length", &Vector4::length,
+            "normalize", &Vector4::normalize
+        );
 
 #pragma endregion Vectors
 #pragma region Transform-Control
@@ -152,6 +159,9 @@ void LuaBindngs::setLuaBindings(sol::state &lua) {
     );
 #pragma endregion Sprite-Control
 #pragma region Scene-Manangment
+    lua["scene"] = &Application::scene;
+
+    // TODO: add scene changinge, scene control, and scene coroutine
     lua.new_usertype<Object>("Object",
         "color", &Object::color,
         "transform", &Object::transform,

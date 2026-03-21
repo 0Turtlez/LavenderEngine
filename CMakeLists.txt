@@ -18,9 +18,11 @@ if (NOT EMSCRIPTEN)
     find_package(OpenGL REQUIRED)
     find_package(glfw3 CONFIG REQUIRED)
 endif ()
-find_package(Lua REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LUAJIT REQUIRED IMPORTED_TARGET luajit)
 find_package(sol2 CONFIG REQUIRED)
 
+add_compile_definitions(SOL_LUAJIT=1)
 # Define Executable
 add_executable(lavender main.cpp
         include/glad/src/glad.c
@@ -63,12 +65,17 @@ add_executable(lavender main.cpp
         include/stb_image/stb_image.h
 )
 
+target_include_directories(lavender PRIVATE
+        ${LUA_INCLUDE_DIR}
+        ${LUAJIT_INCLUDE_DIRS}
+)
 # Link Frameworks and Libraries to the 'lavender' target
 target_link_libraries(lavender
         PRIVATE
         sol2::sol2
-        unofficial::lua::lua
+        PkgConfig::LUAJIT
 )
+
 
 if (NOT EMSCRIPTEN)
     target_link_libraries(lavender
@@ -112,7 +119,10 @@ if (EMSCRIPTEN)
     )
 endif()
 # Add assets folder
+# TODO: refactor to allow project directories, temporary copy
 add_custom_command(TARGET lavender POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E rm -rf "$<TARGET_FILE_DIR:lavender>/assets"
+#        COMMENT "Deleting old assets build"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/assets"
         "$<TARGET_FILE_DIR:lavender>/assets"

@@ -44,7 +44,7 @@ void Renderer::setupRenderer() {
 void Renderer::drawScene(Scene &scene) {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Gather pooints into master buffer
+    // Gather points into master buffer
     std::vector<Point> masterBuffer;
     for (Object* object : scene.objects) {
         if (object == nullptr) {

@@ -21,8 +21,9 @@
 using namespace lavender::core;
 
 int main(int argc, char** argv) {
-
-    Application application = Application("Lavender", 960, 540);
+    // Creates an application instance then runs it
+    // TODO: Refactor to give lua control of application managment
+    Application application = Application("Lavender", 500, 540);
     application.run();
 
     return 0;
