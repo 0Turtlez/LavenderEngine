@@ -5,6 +5,11 @@
     "lua",
     "luajit",
     "sol2",
-    "glfw3"
+    "glfw3",
+    "imgui",
+    {
+      "name": "pkgconf",
+      "host": true
+    }
   ]
 }

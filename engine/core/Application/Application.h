@@ -55,6 +55,9 @@ namespace lavender::core {
         static void mainLoopStep();
         static void setupGlad();
         static void setupGLFW();
+
+        void setupImGui();
+
         static void setupLua();
     };
 }

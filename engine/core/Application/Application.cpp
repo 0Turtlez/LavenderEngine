@@ -155,6 +155,10 @@ void Application::setupGLFW() {
 
 }
 
+void Application::setupImGui() {
+
+}
+
 void Application::setupLua() {
     LuaBindngs::setLuaBindings(lua);
 }

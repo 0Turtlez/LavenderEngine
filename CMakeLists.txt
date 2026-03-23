@@ -74,6 +74,7 @@ target_link_libraries(lavender
         PRIVATE
         sol2::sol2
         PkgConfig::LUAJIT
+        imgui::imgui
 )
 
 
